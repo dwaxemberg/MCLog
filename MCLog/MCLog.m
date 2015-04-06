@@ -36,7 +36,7 @@ NSRegularExpression * escCharPattern();
 
 
 typedef NS_ENUM(NSUInteger, MCLogLevel) {
-    MCLogLevelVerbose = 0x1000,
+    MCLogLevelDebug = 0x1000,
     MCLogLevelInfo,
     MCLogLevelWarn,
     MCLogLevelError
@@ -215,19 +215,19 @@ static const void *LogLevelAssociateKey;
     NSString *content = [logText substringFromIndex:prefixRange.length];
     NSString *originalContent = [ControlCharsPattern stringByReplacingMatchesInString:content options:0 range:NSMakeRange(0, content.length) withTemplate:@""];
     
-    if ([originalContent hasPrefix:@"-[VERBOSE]"]) {
-        [item setLogLevel:MCLogLevelVerbose];
+    if ([originalContent hasPrefix:@"<DEBUG>"]) {
+        [item setLogLevel:MCLogLevelDebug];
         content = [NSString stringWithFormat:(LC_ESC @"[34m%@" LC_RESET), content];
     }
-    else if ([originalContent hasPrefix:@"-[INFO]"]) {
+    else if ([originalContent hasPrefix:@"<INFO>"]) {
         [item setLogLevel:MCLogLevelInfo];
         content = [NSString stringWithFormat:(LC_ESC @"[32m%@" LC_RESET), content];
     }
-    else if ([originalContent hasPrefix:@"-[WARN]"]) {
+    else if ([originalContent hasPrefix:@"<WARN>"]) {
         [item setLogLevel:MCLogLevelWarn];
         content = [NSString stringWithFormat:(LC_ESC @"[33m%@" LC_RESET), content];
     }
-    else if ([originalContent hasPrefix:@"-[ERROR]"]) {
+    else if ([originalContent hasPrefix:@"<ERROR>"]) {
         [item setLogLevel:MCLogLevelError];
         content = [NSString stringWithFormat:(LC_ESC @"[31m%@" LC_RESET), content];
     } else {
@@ -306,7 +306,7 @@ static IMP OriginalClearTextIMP = nil;
     
     NSInteger filterMode = [[self valueForKey:@"filterMode"] intValue];
     BOOL shouldShowLogLevel = YES;
-    if (filterMode >= MCLogLevelVerbose) {
+    if (filterMode >= MCLogLevelDebug) {
         shouldShowLogLevel = [obj logLevel] >= filterMode
         || [[obj valueForKey:@"input"] boolValue]
         || [[obj valueForKey:@"prompt"] boolValue]
@@ -762,7 +762,7 @@ static const void *kTimerKey;
     }
     
     if(filterButton) {
-        [self filterPopupButton:filterButton addItemWithTitle:@"Verbose" tag:MCLogLevelVerbose];
+        [self filterPopupButton:filterButton addItemWithTitle:@"Debug" tag:MCLogLevelDebug];
         [self filterPopupButton:filterButton addItemWithTitle:@"Info" tag:MCLogLevelInfo];
         [self filterPopupButton:filterButton addItemWithTitle:@"Warn" tag:MCLogLevelWarn];
         [self filterPopupButton:filterButton addItemWithTitle:@"Error" tag:MCLogLevelError];
